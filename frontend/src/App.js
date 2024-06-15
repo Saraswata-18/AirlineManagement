@@ -9,7 +9,7 @@ import FlightOverview from './components/FlightOverview/FlightOverview';
 import Seats from './components/FlightOverview/Seats';
 import Payment from './components/Payment/PaymentFe';
 import Booking from './components/Booking/Booking';
-import CompanyProfile from './components/CompanyProfile/CompanyProfile';
+// import CompanyProfile from './components/CompanyProfile/CompanyProfile';
 import Travel from './components/Travel/Travel';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 function App() {
@@ -29,6 +29,7 @@ function App() {
         <Route exact path="/SignIn" element={<SignIn/>} />
         <Route exact path='/profile' element={<Profile/>}/>
         <Route exact path='/flights' element={<Flights/>}/>
+        <Route exact path='/travel' element={<Travel/>}/>
       </Routes>
     </div>
     </Router>

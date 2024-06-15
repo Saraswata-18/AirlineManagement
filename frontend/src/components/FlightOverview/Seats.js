@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../API/api'
-const Seats = ({seats,seatsPrice,setSeatsPrice,type,num,seatsk,setSeatsk,passenger_info_list,setPassengerInfoList}) => {
+const Seats = ({seats,seatsPrice,setSeatsPrice,type,num,passenger_info_list,setPassengerInfoList,stype}) => {
     const navigate = useNavigate()
     const [rerender,setrerender]=useState(true)
-    
+    const [seatsk, setSeatsk] = useState([])
     const [seatsc, setSeatsc] = useState([])
     const [seatsp,setSeatsp] = useState([])
     const [pass,setPass]=useState(passenger_info_list)
@@ -241,6 +241,7 @@ const Seats = ({seats,seatsPrice,setSeatsPrice,type,num,seatsk,setSeatsk,passeng
                         listItems.push(<div className='w-10 h-10'></div>)
                     }
                 }else{
+                    if(stype==='economy'){
                 if (!item.isAvailable) {
                     listItems.push(<button className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
                 }
@@ -255,7 +256,31 @@ const Seats = ({seats,seatsPrice,setSeatsPrice,type,num,seatsk,setSeatsk,passeng
                 if(item.seatNumber.slice(-1)==='C'){
                     listItems.push(<div className='w-10 h-10'></div>)
                 }
-    }})
+            }else{
+                if(lisb.includes(item.seatNumber)){
+                    listItems.push(<button onClick={(e) => handleBusi(e)} className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
+        
+                }else if(lisl.includes(item.seatNumber)){
+                    listItems.push(<div className='w-10 h-10'></div>)}
+                    else if(lisp.includes(item.seatNumber)){
+                        listItems.push(<button onClick={(e) => handlePrem(e)} className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
+                    }else{
+                        if (!item.isAvailable) {
+                            listItems.push(<button className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
+                        }
+                        else {
+                            if((item.price)===0){
+                            listItems.push(<button onClick={(e) => handleClick(e)} className='bg-green-500 w-10 text-white hover:brightness-75 cursor-pointer hover:shadow-sm hover:shadow-black rounded-md h-10' key={index}>{item.seatNumber}</button>)}
+                            else if((item.price)<=300){listItems.push(<button onClick={(e) => handleClick(e)} className='bg-green-700 w-10 text-white hover:brightness-75 cursor-pointer hover:shadow-sm hover:shadow-black rounded-md h-10' key={index}>{item.seatNumber}</button>)}
+                            else if((item.price)<=500){listItems.push(<button onClick={(e) => handleClick(e)} className='bg-blue-300 w-10 text-white hover:brightness-75 cursor-pointer hover:shadow-sm hover:shadow-black rounded-md h-10' key={index}>{item.seatNumber}</button>)}
+                            else {listItems.push(<button onClick={(e) => handleClick(e)} className='bg-purple-500 w-10 text-white hover:brightness-75 cursor-pointer hover:shadow-sm hover:shadow-black rounded-md h-10' key={index}>{item.seatNumber}</button>)}
+        
+                        }
+                    }
+                    if(item.seatNumber.slice(-1)==='C'){
+                        listItems.push(<div className='w-10 h-10'></div>)
+                    }
+            }}})
         
         return listItems;
     };

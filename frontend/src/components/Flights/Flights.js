@@ -10,7 +10,7 @@ import api from '../API/api'
  
 import { useState } from 'react'
 const Flights = () => {
-  const[searchParam]=useSearchParams()
+  const[searchParam,setSearchParams]=useSearchParams()
   const from=searchParam.get('f')
   const to=searchParam.get('t')
   const way=searchParam.get('tway')
@@ -18,6 +18,7 @@ const Flights = () => {
   const type=searchParam.get('ty')
   const dept=searchParam.get('dd')
   const arr=searchParam.get('ad')
+  const df=searchParam.get('df')
   // const [DataF,setData] = useState({data});
   // console.log(data);
   // setData(data);
@@ -33,37 +34,37 @@ const Flights = () => {
  const navigate=useNavigate()
 
 // const data = [
- const Data= [{
-      flightInfo : "IndiGo | 6E-1058 | 6E-713",
-      from : "BKK",
-      departure : "06:40",
-      duration : "7h 25m",
-      stops : 0,
-      to : "PAT",
-      arrival : "08:35",
-      price : 58000,
-      priceInfo : "",
-  },{
-    flightInfo : "IndiGo | 6E-1058 | 6E-713",
-    from : "BKK",
-    departure : "05:40",
-    duration : "7h 25m",
-    stops : 0,
-    to : "PAT",
-    arrival : "08:35",
-    price : 58000,
-    priceInfo : "",
-},{
-  flightInfo : "Air India| 6E-1058 | 6E-713",
-  from : "BKK",
-  departure : "12:40",
-  duration : "7h 25m",
-  stops : 0,
-  to : "PAT",
-  arrival : "08:35",
-  price : 58000,
-  priceInfo : "",
-}];
+//  const Data= [{
+//       flightInfo : "IndiGo | 6E-1058 | 6E-713",
+//       from : "BKK",
+//       departure : "06:40",
+//       duration : "7h 25m",
+//       stops : 0,
+//       to : "PAT",
+//       arrival : "08:35",
+//       price : 58000,
+//       priceInfo : "",
+//   },{
+//     flightInfo : "IndiGo | 6E-1058 | 6E-713",
+//     from : "BKK",
+//     departure : "05:40",
+//     duration : "7h 25m",
+//     stops : 0,
+//     to : "PAT",
+//     arrival : "08:35",
+//     price : 58000,
+//     priceInfo : "",
+// },{
+//   flightInfo : "Air India| 6E-1058 | 6E-713",
+//   from : "BKK",
+//   departure : "12:40",
+//   duration : "7h 25m",
+//   stops : 0,
+//   to : "PAT",
+//   arrival : "08:35",
+//   price : 58000,
+//   priceInfo : "",
+// }];
 const [data,setData] = useState([]);
 const [data2,setData2] = useState([]);
 
@@ -73,7 +74,7 @@ const [data2,setData2] = useState([]);
 useEffect(()=>{
   api.post('/api/getflights',{from:from,to:to,date:dept,premium:(type==='Economy')?false:true}).then((res)=>{console.log(res);setData(res.data.arr);setData2(res.data.arr)}).catch((err)=>{console.log(err)})
 
-},[])
+},[from])
 function isTimeRange(range,time){
   const [startTime, endTime] = range;
 
@@ -290,14 +291,14 @@ function resetHandler(){
 
 
       </div>
-        <div className='mt-16 w-[900px]  mr-2 ml-4 '>
-           <div className="h-[50px] w-[900px] mr-2 ml-4 shadow-md bg-zinc-50 flex flex-row items-center pl-2 rounded font-medium">{from} &rarr; {to}</div>
-            
+      <div className='mt-12 w-[900px]  mr-2 ml-4 '>
+        {from&&((!df)?<h1 className='text-2xl font-semibold ml-4'>Select Departure Flight</h1>:<h1 className='text-2xl font-semibold ml-4'>Select Arrival Flight</h1>)}
+           <div className="h-[50px] mt-4 w-[900px] mr-2 ml-4 shadow-md bg-zinc-50 flex flex-row items-center pl-2 rounded font-medium">{from} &rarr; {to}</div> 
            
             
             {
               data.length > 0 ? data.map((item,index)=>(
-              (<FlightDetail data={{...data[index]}} eld={eld} type={type}></FlightDetail>))):
+                (<FlightDetail data={{...data[index]}} eld={eld} type={type} way={way} arr={arr} df={df} from={to} to={from} chi={chi} inf={inf} setSearchParams={setSearchParams} ></FlightDetail>))):
               (
                 <div className='hover:border-sky-600 shadow-md hover:border-2 rounded mt-2 mr-2 ml-4 w-[905px] h-[400px] flex flex-col gap-x-2 justify-center items-center text-3xl font-medium'>
                     <div> No FLights Found! </div>

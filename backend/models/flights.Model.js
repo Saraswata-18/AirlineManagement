@@ -16,7 +16,9 @@ const userSchema=new mongoose.Schema({
     arr_date:String,
     seatRows:Number,
     fromTitle:String,
-    toTitle:String
+    toTitle:String,
+    ratings:Number,
+    reviews:Array
 
 })
 module.exports=mongoose.model("flightindexe",userSchema);

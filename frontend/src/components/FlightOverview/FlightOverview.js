@@ -12,16 +12,26 @@ const FlightOverview = () => {
   
 const[searchParam]=useSearchParams()
 const id=searchParam.get('id')
+const way=searchParam.get('w')
+const [nway,setNway]=useState((way==='true'))
+const df=searchParam.get('df')
     const [flight_details,setFlight_details] = useState({})
     const [passengers_num, setPassengersNum] = useState(Number(searchParam.get('p')));
     const [loading, setLoading] = useState(false);
     const [travellers,setTravellers]=useState([])
+    const [oldprice,setOldprice]=useState()
+    const [oldlist,setoldlist]=useState([])
+    const [arrflight,setarrflight]=useState({})
+    const [arrseats,setarrseats]=useState([])
     const [addtravellers,setAddTravellers]=useState([])
     const [ispop3,setIspop3]=useState(false)
+    const [id1,setId1]=useState()
+    const [id2,setId2]=useState()
+    const [stype,setStype]=useState('economy')
     const [username,setUserName]=useState('')
     const [passenger_info_list, setPassengerInfoList] = useState([]);
     const [seats, setSeats] = useState([])
-    const [seatsk, setSeatsk] = useState([])
+    const [payment,setPayment]=useState({})
     const [seatspass, setSeatspass] = useState([])
     const [seatscou, setSeatscou] = useState(0)
     const [cfee,setCfee]=useState(200)
@@ -63,6 +73,7 @@ const id=searchParam.get('id')
                 departure_date: res.data.dept_date,
                 departure_time: res.data.dept_time,
                 arrival_date: res.data.arr_date,
+                arrival_time:res.data.arr_time,
                 duration: res.data.duration,
                 price: (type==='Business')?res.data.busiprice:(type==='Premium Economy')?res.data.premprice:res.data.price,
                 image:res.data.image,
@@ -70,7 +81,26 @@ const id=searchParam.get('id')
             }
             setFlight_details(flight)
             
-            api.post("/api/seats",{id:res.data.flight_id}).then((res)=>{console.log(res.data);if(res.data.success){setSeats(res.data.seats)}}).catch((err)=>console.log(err))
+            api.post("/api/seats",{id:res.data.flight_id}).then((res)=>{console.log(res.data);if(res.data.success){setSeats(res.data.seats);setStype(res.data.seatClass)};if(way==='true'){
+              api.post("/api/flights",{id:df}).then((res)=>{console.log('hi');console.log(res.data);const flight={
+                  flight_number: res.data.flight_id,
+                  airline: res.data.flight_name,
+                  departure_airport: res.data.fromTitle,
+                  arrival_airport: res.data.toTitle,
+                  departure_date: res.data.dept_date,
+                  departure_time: res.data.dept_time,
+                  arrival_date: res.data.arr_date,
+                  arrival_time:res.data.arr_time,
+                  duration: res.data.duration,
+                  price: (type==='Business')?res.data.busiprice:(type==='Premium Economy')?res.data.premprice:res.data.price,
+                  image:res.data.image,
+                  seatId:res.data.seatId
+              }
+              setarrflight(flight)
+              api.post("/api/seats",{id:res.data.flight_id}).then((res)=>{console.log(res.data);if(res.data.success){setarrseats(res.data.seats)};}).catch((err)=>{console.log(err)})
+            }
+
+            ).catch((err)=>{console.log(err)})}}).catch((err)=>console.log(err))
         }).catch((err)=>console.log(err))
       }
       useEffect(() => check(), [])
@@ -80,7 +110,31 @@ const id=searchParam.get('id')
     //         setLoading(false);
     //     }, 3000);
     // }, []);
-const handlePay=()=>{
+    const handlePay=(data)=>{
+      const sarr=[]
+      passenger_info_list.forEach((item)=>{
+        sarr.push(item.seat)
+      })
+      const sarr2=[]
+      let arr2=[]
+      if(oldlist){
+        oldlist.forEach((item)=>{
+          sarr.push(item.seat)
+        })
+        arr2=arrseats.map((item)=>((sarr2.includes(item.seatNumber))?{seatNumber:item.seatNumber,price:item.price,isAvailable:false}:item))
+      }
+      const arr=seats.map((item)=>((sarr.includes(item.seatNumber))?{seatNumber:item.seatNumber,price:item.price,isAvailable:false}:item))
+    
+        if(way==='true'){
+          console.log(oldlist)
+            api.post('/api/settravel',{username:username,passengers:oldlist,flightDetails:flight_details,paymentDetails:data})
+            .then((res)=>{if(res.data.success){api.post('/api/settravel',{username:username,passengers:passenger_info_list,flightDetails:arrflight,paymentDetails:data})
+              .then(()=>{navigate('/travel')})
+            .catch((err)=>{console.log(err)})}})
+            .catch((err)=>{console.log(err)})
+        }else{
+          api.post('/api/settravel',{username:username,passengers:passenger_info_list,flightDetails:flight_details,paymentDetails:data}).then(()=>{api.post('/api/addseats',{id:flight_details.flight_number,type:(type=='Economy')?'economy':'premium',seatarr:arr}).then(()=>navigate('/travel'))}).catch((err)=>{console.log(err)})
+        }
     
 
 }
@@ -108,6 +162,8 @@ const handlePay=()=>{
         order_id: order_id,
         handler: async (response) => {
           console.log('Payment response:', response);
+          setPayment({order_id:response.razorpay_order_id,payment_id: response.razorpay_payment_id,signature:response.razorpay_signature})
+          ;handlePay({order_id:response.razorpay_order_id,payment_id: response.razorpay_payment_id,signature:response.razorpay_signature})
           try {
             await api.post('/secure/payment/success', {
               razorpay_order_id: response.razorpay_order_id,
@@ -178,6 +234,15 @@ const handlePay=()=>{
                             handlePay={handlePay}
                             seatspass={seatspass}
                             setSeatspass={setSeatspass}
+                            way={way}
+                            nway={nway}
+                            setNway={setNway}
+                            df={df}
+                            oldprice={oldprice}
+                            setOldprice={setOldprice}
+                            oldlist={oldlist}
+                            setoldlist={setoldlist}
+                            arrflight={arrflight}
                         />
                         
                         {<Options
@@ -192,17 +257,23 @@ const handlePay=()=>{
                             setAddTravellers={setAddTravellers}
                             type={type}
                         />}
-                        {isSeats&&<Seats seats={seats}
+                        {!nway&&isSeats&&<Seats seats={seats}
                             seatsPrice={seatPrice}
                             setSeatsPrice={setSeatPrice}
                             type={type}
                             num={passengers_num}
-                            setSeatsk={setSeatsk}
-                            seatsk={seatsk}
-                            seatscou={seatscou}
-                            setSeatscou={setSeatscou}
                             passenger_info_list={passenger_info_list}
                             setPassengerInfoList={setPassengerInfoList}
+                            stype={stype}
+                        />}
+                        {nway&&isSeats&&<Seats seats={arrseats}
+                            seatsPrice={seatPrice}
+                            setSeatsPrice={setSeatPrice}
+                            type={type}
+                            num={passengers_num}
+                            passenger_info_list={passenger_info_list}
+                            setPassengerInfoList={setPassengerInfoList}
+                            stype={stype}
                         />}
                         
                     </div>

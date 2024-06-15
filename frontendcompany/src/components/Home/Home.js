@@ -45,7 +45,7 @@ const Home = () => {
     <div className='bg-gradient-to-r justify-center items-center from-yellow-400 to-orange-400 flex flex-row w-screen h-screen'>
      <Link to='/addf'><div className='w-96 h-[55vh] rounded-lg bg-white m-10 hover:scale-105 hover:brightness-90 cursor-pointer p-8 transition-all duration-300 ease-in-out'><img src={add} className='w-80 rounded-lg h-[35vh]'/><div className='flex flex-row justify-center mt-10 items-center text-2xl font font-semibold'>Add Flight</div></div></Link> 
      <Link to='/updatef'><div className='w-96 h-[55vh] bg-white rounded-lg m-10 hover:scale-105 hover:brightness-90 cursor-pointer p-8 transition-all duration-300 ease-in-out'><img src={update} className='w-80 rounded-lg h-[35vh]'/><div className='flex flex-row justify-center mt-10 items-center text-2xl font font-semibold'>Flight Updates</div></div></Link>
-      <div className='w-96 h-[55vh] bg-white rounded-lg m-10 hover:scale-105 hover:brightness-90 cursor-pointer p-8 transition-all duration-300 ease-in-out'><img src={user} className='w-80 rounded-lg h-[35vh]'/><div className='flex flex-row justify-center mt-10 items-center text-2xl font font-semibold'>User Check</div></div>
+     <Link to='/usercheck'><div className='w-96 h-[55vh] bg-white rounded-lg m-10 hover:scale-105 hover:brightness-90 cursor-pointer p-8 transition-all duration-300 ease-in-out'><img src={user} className='w-80 rounded-lg h-[35vh]'/><div className='flex flex-row justify-center mt-10 items-center text-2xl font font-semibold'>Check User</div></div></Link>
     </div>
     </>
   )

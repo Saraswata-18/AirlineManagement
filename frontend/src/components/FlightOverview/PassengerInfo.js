@@ -7,6 +7,7 @@ const PassengerInfo = (props) => {
         gender: "",
         mail: "",
         number: "",
+        age:0,
         seat:''
     });
 
@@ -34,6 +35,7 @@ const PassengerInfo = (props) => {
             gender: "",
             mail: "",
             number: "",
+            age:0,
             seat:''
         })
         handleChange()
@@ -76,7 +78,17 @@ const PassengerInfo = (props) => {
                         <option value="other">Other</option>
                     </select>
                 </div>
-
+                <div>
+                    <label className="p-7 text-gray-700 text-lg">Age</label>
+                    <input
+                        type="number"
+                        name="age"
+                        className="border-2 border-gray-600 rounded-lg p-1"
+                        placeholder="18"
+                        value={passenger_info.age}
+                        onChange={(e) => {setPassengerInfo({ ...passenger_info, age: e.target.value });handleChange({ ...passenger_info, age: e.target.value })}}
+                    />
+                </div>
                 <div>
                     <label className="p-7 text-gray-700 text-lg">Email</label>
                     <input

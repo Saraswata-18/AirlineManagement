@@ -2,6 +2,7 @@ const asyncHandler=require("express-async-handler");
 const Flight=require("../models/flights.Model")
 const Staff=require("../models/staff.Model")
 const Manager=require("../models/manager.Model")
+const User=require('../models/user.Model')
 const {hash,compare}=require('bcrypt')
 const dotenv=require("dotenv").config();
 const jwt=require('jsonwebtoken')
@@ -57,4 +58,12 @@ const managerCheck= asyncHandler(async(req,res)=>{
     }
 
 })
-module.exports={addStaff,logStaff,managerCheck}
+const getData=asyncHandler(async(req,res)=>{
+    console.log(username)
+    const {username}=req.body
+    const ans=await User.findOne({username:username})
+    
+    const fin=ans.toObject
+    return res.status(200).send(Object.assign(fin,{password:''}))
+})
+module.exports={addStaff,logStaff,managerCheck,getData}
