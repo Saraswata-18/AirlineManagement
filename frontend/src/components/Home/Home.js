@@ -135,7 +135,7 @@ const Home = () => {
      // const ress=await mhandle.get("/",{params: {query: searchTo}})
       //console.log(ress.data.data[0].presentation.suggestionTitle)
       //const nfilteredData = ress.data.data.map((item) =>item.presentation.suggestionTitle)
-      const nfilteredData= port.filter((item) =>
+      const nfilteredData= port&&port.filter((item) =>
         item.name.toLowerCase().includes(searchTo.toLowerCase())||item.location.toLowerCase().includes(searchTo.toLowerCase())  
     )
       setFilteredData(nfilteredData)}else{
@@ -146,7 +146,7 @@ const Home = () => {
       //const ress=await mhandle.get("/",{params: {query: searchTerm}})
       //console.log(ress.data.data[0].presentation.suggestionTitle)
       //const nfilteredData = ress.data.data.map((item) =>item.presentation.suggestionTitle)
-      const nfilteredData= port.filter((item) =>
+      const nfilteredData= port&&port.filter((item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())||item.location.toLowerCase().includes(searchTerm.toLowerCase())  
     )
 
@@ -282,7 +282,7 @@ const Home = () => {
             <input type='date' min={selectedDate1.toISOString().split('T')[0]} className={` rounded-md  h-14 w-0 ml-0 mt-3  text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-translate duration-300 ease-in-out transform ${rtrip ? 'w-40 ml-7 py-2 px-3 border border-gray-300' : ''}`}
               value={selectedDate.toISOString().split('T')[0]}
               onChange={handleDateChange} />
-            <button onClick={()=>navigate(`/flights?f=${fiata}&t=${tiata}&tway=${rtrip}&p=${acount}-${ccount}-${icount}&ty=${opt}&dd=${selectedDate1.toISOString().split('T')[0]}&ad=${(selectedDate.toISOString().split('T')[0])||' '}`)} className='w-28 text-white mt-3 ml-3 font-semibold bg-purple-700 h-14 rounded-md hover:scale-110 hover:bg-brightness-75 '>Search</button>
+            <button onClick={() => {if(from&&to){navigate(`/flights?f=${fiata}&t=${tiata}&tway=${rtrip}&p=${acount}-${ccount}-${icount}&ty=${opt}&dd=${selectedDate1.toISOString().split('T')[0]}&ad=${(selectedDate.toISOString().split('T')[0]) || ' '}`)}else{window.alert("Enter From And To")}}} className='w-28 text-white mt-3 ml-3 font-semibold bg-purple-700 h-14 rounded-md hover:scale-110 hover:bg-brightness-75 '>Search</button>
           </div>
         </div>
       </div>

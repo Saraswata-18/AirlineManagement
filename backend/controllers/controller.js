@@ -10,6 +10,7 @@ const Users=User.find();
 const Seat=require("../models/seat.Model")
 const Flight=require("../models/flights.Model")
 const Travel=require('../models/Travelhistory.Model')
+const Notification=require('../models/Notification')
 const Feeedback=require('../models/feedback.Model')
 const getUsers=asyncHandler(async(req,res)=>{
     res.status(200).json({message:"Get all contacts"});
@@ -32,7 +33,7 @@ const deleteUser=async(req,res)=>{
 const seatCheck=asyncHandler(async(req,res)=>{
 
     const {id}=req.body
-    console.log(id)
+   
     const seat=await Seat.findOne({seatId:id})
     if(seat){
         return res.status(200).send({success:true,
@@ -44,7 +45,7 @@ const seatCheck=asyncHandler(async(req,res)=>{
 const getFlight=asyncHandler(async(req,res)=>{
     let {id}=req.body
     const flight=await Flight.findOne({flight_id:id})
-   console.log('hi')
+   
     if(flight){
         const rek=flight.toObject()
         const fin=Object.assign({success:true},rek)
@@ -72,12 +73,12 @@ const setFlight=asyncHandler(async(req,res)=>{
         const data1=Object.assign(data,{ratings:0,reviews:[]})
         const flight=new Flight(data1)
    const ans =await flight.save()
-   console.log(data.flight_id)
+   
    return res.status(200).send({id:data.flight_id})}
 })
 const addSeats=asyncHandler(async(req,res)=>{
     const {id,type,seatarr}=req.body
-    console.log(id)
+    
     const seat=new Seat({
         seatId:id,
         seatClass:type,
@@ -99,7 +100,7 @@ const addSeats=asyncHandler(async(req,res)=>{
 })
 const getAllFlight=asyncHandler(async(req,res)=>{
            const {from,to,date,premium}=req.body
-           console.log([from,to,date,premium])
+           
             let all=[]
             if(premium){
              all=await Flight.find({from:from,to:to,dept_date:date,premium:premium})}
@@ -116,11 +117,24 @@ const getAllFlight=asyncHandler(async(req,res)=>{
 })
 const setTravel=asyncHandler(async(req,res)=>{
     const ndata=req.body
-    const dt=new Date()
+    let dt=new Date()
     const data=Object.assign(ndata,{bookingDate:dt.toISOString().split('T')[0]})
-    console.log(data)
+   
     const sub=new Travel(data)
     const ans=await sub.save()
+    let dt1=new Date(sub.flightDetails.departure_date+'T'+sub.flightDetails.departure_time)
+    dt1.setDate(dt1.getDate()-1)
+    const it=new Notification({username:data.username,message:"Your flight is in 24 hrs get ready.",sendDate:dt1.toISOString().split('T')[0],sendTime:dt1.toISOString().split('T')[1]})
+    await it.save()
+    let dt2=new Date(sub.flightDetails.departure_date+'T'+sub.flightDetails.departure_time)
+    dt2.setTime(dt2.getTime()-1000*60*60*3)
+    const it2=new Notification({username:data.username,message:"Your flight is in 3 hrs get ready.",sendDate:dt2.toISOString().split('T')[0],sendTime:dt2.toISOString().split('T')[1]})
+    await it2.save()
+    let dt3=new Date(sub.flightDetails.departure_date+'T'+sub.flightDetails.departure_time)
+    dt3.setTime(dt3.getTime()-1000*60*60)
+    const it3=new Notification({username:data.username,message:"Your flight is in 1 hr get ready.",sendDate:dt3.toISOString().split('T')[0],sendTime:dt3.toISOString().split('T')[1]})
+    await it3.save()
+    
     if(ans){
         return res.status(200).send({success:true})
     }
@@ -130,9 +144,9 @@ const addrating=asyncHandler(async(req,res)=>{
     const {id,rating,review}=req.body
     
     const ans=await Flight.findOne({flight_id:id})
-    console.log(ans)
+   
     
-    const nratings=(ans.ratings+rating)/(ans.reviews.length+1)
+    const nratings=((ans.ratings)*(ans.reviews.length)+rating)/(ans.reviews.length+1)
     const nreviews=ans.reviews
     nreviews.push(review)
     const data=ans.toObject()
@@ -145,7 +159,7 @@ const addrating=asyncHandler(async(req,res)=>{
     ans2.forEach(async(item)=>{
         if(item.flightDetails.flight_number==id){
             
-            console.log(item)
+          
             let obji=item.toObject()
             const far=await Travel.findByIdAndDelete(item._id)
             if(obji.feedback){

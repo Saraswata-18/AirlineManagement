@@ -58,8 +58,8 @@ const userSchema=new mongoose.Schema({
         unique:false,
     },image:String,
     deviceToken:{
-        type:String
-    }
+        type:Array
+    },notifications:Array
 },{timestamps:false});
 
 module.exports=mongoose.model("User",userSchema);

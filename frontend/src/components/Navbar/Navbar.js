@@ -5,6 +5,7 @@ import api from '../API/api.js'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useState } from 'react'
+import Notification from '../Notifications/Notification.js'
 const Navbar = () => {
   const navigate=useNavigate()
   const [h,setH] = useState('')
@@ -79,7 +80,7 @@ useEffect(()=>{
     { h&&
      <button onClick={()=>{handleLog()}} className='self-end mb-4 ml-[47vw] w-24 h-10 text-white text-lg text-semibold rounded-3xl bg-white bg-opacity-10 shadow-gray-800 shadow-md hover:scale-105 hover:bg-opacity-20'>{h}</button>}
      <Link className='ml-10 text-blue-500' to="/travel">
-     <button className='self-end mb-1 ml-6 text-white text-lg text-semibold w-36 h-10 rounded-3xl bg-white bg-opacity-10 shadow-gray-800 shadow-md hover:scale-105 hover:bg-opacity-20'>Travel History</button></Link>
+     <button className='self-end mb-1 ml-6 text-white text-lg text-semibold w-36 h-10 rounded-3xl bg-white bg-opacity-10 shadow-gray-800 shadow-md hover:scale-105 hover:bg-opacity-20'>Travel History</button></Link><Notification/>
     </div>
   )
 }

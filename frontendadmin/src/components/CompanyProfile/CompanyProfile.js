@@ -4,11 +4,47 @@ import Navbar from '../Navbar/Navbar';
 import { useNavigate } from 'react-router-dom';
 const CompanyProfile = () => {
   const navigate=useNavigate()
-    const check=()=>{
-        const token = localStorage.getItem('token')
-        if (!token) {
-          navigate("/")
+  const check=()=>{
+    const token = localStorage.getItem('token')
+    if (!token) {
+      navigate("/")
+    } else {
+      api.get('/logged/manager', {
+        headers: {
+          Authorization: token
+        }
+      }).then(res => {
+
+        if (res.data.success) {
+
+
+
+
         } else {
+          api.get('/logged/company/staff', {
+            headers: {
+              Authorization: token
+            }
+          }).then(res => {
+
+            if (res.data.success) {
+
+
+
+
+            } else {
+              localStorage.removeItem('token')
+              navigate("/")
+
+            }
+          }).catch((err) => {
+            localStorage.removeItem('token')
+            navigate("/")
+
+          })
+
+        }
+      }).catch((err) => {
           api.get('/logged/company/staff', {
             headers: {
               Authorization: token
@@ -30,8 +66,10 @@ const CompanyProfile = () => {
             navigate("/")
     
           })
-        }
+        })
+
       }
+    }
       useEffect(() => check(), [])
 const [name,setName]=useState('')
 const [number,setNumber]=useState('')
@@ -174,7 +212,7 @@ const [state,setState]=useState('')
               value={username}
               onChange={(e)=>setUsername(e.target.value)}
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter your username"
                 className="px-3 py-2 border rounded-md text-sm shadow-sm placeholder-slate-400
                            focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
                            disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200

@@ -25,15 +25,15 @@ const df=searchParam.get('df')
     const [arrseats,setarrseats]=useState([])
     const [addtravellers,setAddTravellers]=useState([])
     const [ispop3,setIspop3]=useState(false)
-    const [id1,setId1]=useState()
-    const [id2,setId2]=useState()
     const [stype,setStype]=useState('economy')
     const [username,setUserName]=useState('')
+    const [pnumber,setPnumber]=useState()
+    const [address,setAddress]=useState()
     const [passenger_info_list, setPassengerInfoList] = useState([]);
     const [seats, setSeats] = useState([])
     const [payment,setPayment]=useState({})
     const [seatspass, setSeatspass] = useState([])
-    const [seatscou, setSeatscou] = useState(0)
+    const [mail,setMail]=useState('')
     const [cfee,setCfee]=useState(200)
     const [isSeats,setIsSeats]=useState(false)
     const [seatPrice,setSeatPrice]=useState(0)
@@ -52,9 +52,12 @@ const df=searchParam.get('df')
           }).then(res => {
            
             if (res.data.success) {   
-                console.log(res.data.travellers)        
+                // console.log(res.data.travellers)        
               setTravellers(res.data.travellers);
               setUserName(res.data.username);
+              setMail(res.data.usermail)
+              setPnumber(res.data.number)
+              setAddress(res.data.address)
             } else {
               localStorage.removeItem('token')
               navigate("/")
@@ -81,8 +84,8 @@ const df=searchParam.get('df')
             }
             setFlight_details(flight)
             
-            api.post("/api/seats",{id:res.data.flight_id}).then((res)=>{console.log(res.data);if(res.data.success){setSeats(res.data.seats);setStype(res.data.seatClass)};if(way==='true'){
-              api.post("/api/flights",{id:df}).then((res)=>{console.log('hi');console.log(res.data);const flight={
+            api.post("/api/seats",{id:res.data.flight_id}).then((res)=>{if(res.data.success){setSeats(res.data.seats);setStype(res.data.seatClass)};if(way==='true'){
+              api.post("/api/flights",{id:df}).then((res)=>{const flight={
                   flight_number: res.data.flight_id,
                   airline: res.data.flight_name,
                   departure_airport: res.data.fromTitle,
@@ -97,7 +100,7 @@ const df=searchParam.get('df')
                   seatId:res.data.seatId
               }
               setarrflight(flight)
-              api.post("/api/seats",{id:res.data.flight_id}).then((res)=>{console.log(res.data);if(res.data.success){setarrseats(res.data.seats)};}).catch((err)=>{console.log(err)})
+              api.post("/api/seats",{id:res.data.flight_id}).then((res)=>{if(res.data.success){setarrseats(res.data.seats)};}).catch((err)=>{console.log(err)})
             }
 
             ).catch((err)=>{console.log(err)})}}).catch((err)=>console.log(err))
@@ -141,7 +144,7 @@ const df=searchParam.get('df')
     const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const handlePayment = async (amount) => {
-    console.log('Payment button clicked');
+    // console.log('Payment button clicked');
     try {
       const orderResponse = await api.post('/secure/payment/order', {
         amount: amount,
@@ -150,18 +153,18 @@ const df=searchParam.get('df')
         notes: { flight: 'Flight XYZ' }
       });
 
-      console.log('Order response:', orderResponse.data);
+      // console.log('Order response:', orderResponse.data);
       const { id: order_id } = orderResponse.data;
 
       const options = {
-        key: 'rzp_test_dWGuTHp9rBWXeX',
+        key: process.env.REACT_APP_key,
         amount: amount * 100,
         currency: 'INR',
         name: 'Flight Booking',
         description: 'Test Transaction',
         order_id: order_id,
         handler: async (response) => {
-          console.log('Payment response:', response);
+          // console.log('Payment response:', response);
           setPayment({order_id:response.razorpay_order_id,payment_id: response.razorpay_payment_id,signature:response.razorpay_signature})
           ;handlePay({order_id:response.razorpay_order_id,payment_id: response.razorpay_payment_id,signature:response.razorpay_signature})
           try {
@@ -176,12 +179,12 @@ const df=searchParam.get('df')
           }
         },
         prefill: {
-          name: 'Your Name',
-          email: 'your.email@example.com',
-          contact: '9999999999'
+          name: username,
+          email: mail,
+          contact: pnumber
         },
         notes: {
-          address: 'Your Address'
+          address: address
         },
         theme: {
           color: '#F37254'

@@ -1,13 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const { getNotifications, markAsRead } = require('../controllers/notificationsController');
-const { verifyToken } = require('../middlewares/authMiddleware');
-const { sendPushNotification } = require('../controllers/notificationsController');
-
-router.get('/', verifyToken, getNotifications);
-router.put('/:id', verifyToken, markAsRead);
-router.post('/send', sendPushNotification);
+const {broadcast,sendnot} = require('../controllers/notificationsController');
+router.post('/send', sendnot);
+router.post('/broadcast',broadcast)
 
 module.exports = router;
 

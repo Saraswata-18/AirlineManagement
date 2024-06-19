@@ -11,9 +11,10 @@ const Travel = () => {
   const [fid,setFid]=useState()
   const [review,setreview]=useState('')
   const [rating,setrating]=useState()
+  const [isr,setIsr]=useState(false)
   const [departure_date,setDeparture_date]=useState()
   const [dept_time,setDept_time]=useState()
-  const [complete,setComplete]=useState(true)
+  const [complete,setComplete]=useState(false)
   const [username,setUsername]=useState('')
   const [selectedData, setSelectedData] = useState(null); // Store the selected data here
   const navigate=useNavigate()
@@ -47,9 +48,9 @@ const Travel = () => {
     }
   }
   const feedback=()=>{
-      api.post('/api/rating',{id:fid,rating:rating?rating:0,review:{username:username,rating:rating,review:review}}).then((res)=>{setFid();setrating('');setreview('');setShowfeedback(false)}).catch((err)=>{console.log(err)})
+    api.post('/api/rating',{id:fid,rating:rating?rating:0,review:{username:username,rating:rating,review:review}}).then((res)=>{setFid();setrating('');setreview('');setIsr(!isr);setShowfeedback(false)}).catch((err)=>{console.log(err)})
   }
-  useEffect(() => check(), [])
+  useEffect(() => check(), [isr])
   // const travelHistoryData = [
   //   {
   //     airline:'Indigo',

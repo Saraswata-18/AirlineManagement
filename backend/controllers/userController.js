@@ -5,7 +5,7 @@ const dotenv=require("dotenv").config();
 const jwt=require('jsonwebtoken')
 const Travel=require('../models/Travelhistory.Model')
 const createUser=asyncHandler(async(req,res)=>{
-    const {username, email,password}=req.body;
+    const {username, email,password,dtoken}=req.body;
     
     if(!username||!email||!password){
         res.status(400).send(
@@ -31,7 +31,9 @@ const createUser=asyncHandler(async(req,res)=>{
         address : '',
         travellers : [],
         number : '',
-        image: ''
+        image: '',
+        deviceToken:[dtoken],
+        notifications:[]
     
 })
     const nuser=await user.save()
@@ -48,7 +50,7 @@ const createUser=asyncHandler(async(req,res)=>{
     })
 });
 const checkUser=asyncHandler(async(req,res)=>{
-       const {username,password}=req.body
+       const {username,password,dtoken}=req.body
        const user=await User.findOne({username:username})
        if(!user){
         return res.status(400).send({
@@ -63,6 +65,12 @@ const checkUser=asyncHandler(async(req,res)=>{
                 message:"Incorrect Password"
             })
        }
+       let arr= user.deviceToken
+       if(!arr.includes(dtoken)){
+        arr.push(dtoken)
+       }
+       user.overwrite(Object.assign(user.toObject(),{deviceToken:arr}))
+       const jk=await user.save()
        const payload={
         username:user.username,
         id:user._id
@@ -78,9 +86,9 @@ const checkUser=asyncHandler(async(req,res)=>{
 const upUser=asyncHandler(async(req,res)=>{
     const {usermail,name,number,pincode,address,state,travellers,gender,birthday}=req.body
     const user=await User.findOne({email:usermail})
-    console.log(Array.isArray(travellers))
+    
     user.travellers=travellers
-    console.log(travellers)
+   
     user.name=name;
     user.number=number;
     user.pincode=pincode;
@@ -116,7 +124,7 @@ const upPass=asyncHandler(async(req,res)=>{
             })
        }else{
         const pass=await hash(newpass,10)
-        console.log(newpass)
+      
         user.password=pass
         user.save()
         return res.status(200).send({
@@ -129,7 +137,7 @@ const upPass=asyncHandler(async(req,res)=>{
         user.image=image
         
         const pass= await user.save()
-        console.log(pass)
+    
         if(pass){
             res.status(200).send({success:true})
         }
@@ -139,4 +147,11 @@ const upPass=asyncHandler(async(req,res)=>{
     const all=await Travel.find({username:username})
     return res.status(200).send(all)
  })
-module.exports={createUser,getTravel,checkUser,upUser,upPass,gettraveller,imgup}
+ const markRead=asyncHandler(async(req,res)=>{
+    const {username,notarr}=req.body
+    const user=await User.findOne({username:username})
+    user.overwrite(Object.assign(user.toObject(),{notifications:notarr}))
+    await user.save()
+    return res.status(200).send({success:true})
+ })
+module.exports={createUser,getTravel,checkUser,upUser,upPass,gettraveller,markRead,imgup}

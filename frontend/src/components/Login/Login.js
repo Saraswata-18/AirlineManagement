@@ -7,15 +7,28 @@ import { useRef,useEffect } from 'react';
 // import { useRef } from 'react';
 import Navbar from '../Navbar/Navbar.js'
 import api from '../API/api.js'
+import {getToken} from 'firebase/messaging';
+import { messaging } from '../../firebase.js';
 import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const [isFocus, setIsFocus] = useState(false);
     const [userName,setUserName]=useState('')
     const [userPass,setUserPass]=useState('')
+    const [dtoken,setDtoken]=useState()
     const [isFocusp, setIsFocusp] = useState(false);  
     const navigate=useNavigate()
     const input1=useRef()
     const input2=useRef()
+    async function requestPermission(){
+      const permission=await Notification.requestPermission()
+      if(permission==='granted'){
+        const token=await getToken(messaging, { vapidKey: 'BNTMZX1beK8R5v7O1LBG966gXyVeoYIgqo_gJF8yajvbaUm9e8AORXuNJ7466Hh6VfsNVlGfrqSF-DMw9nMacnU' });
+        setDtoken(token)
+
+      }else if(permission==='denied'){
+        alert("You denied notification, please enable notification");
+      }
+    }
     const handleChange=(e,s)=>{
       if(s==='n'){
         setUserName(e.target.value)
@@ -31,7 +44,8 @@ const Login = () => {
       e.preventDefault()
       api.post('api/user/login',{
           username:userName,
-          password:userPass
+          password:userPass,
+          dtoken:dtoken
       },{
         headers: {
             'Content-Type': 'application/json'
@@ -72,7 +86,7 @@ const check=()=>{
     })
   }
 }
-useEffect(() => check(), [])
+useEffect(() =>{ requestPermission(); check()}, [])
   return (
     <><Navbar/>
     <div className='h-[4.2rem]'></div>

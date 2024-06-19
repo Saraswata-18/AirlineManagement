@@ -5,7 +5,7 @@ import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD5HYuiN2DZibQo1bmPIqzicVLSpcvE17E",
+  apiKey: process.env.REACT_APP_apiKey,
   authDomain: "airline-management-3ba48.firebaseapp.com",
   projectId: "airline-management-3ba48",
   storageBucket: "airline-management-3ba48.appspot.com",
@@ -18,7 +18,7 @@ const app = initializeApp(firebaseConfig);
 export const messaging = getMessaging(app);
 
 export const requestForToken = () => {
-  return getToken(messaging, { vapidKey: 'BNTMZX1beK8R5v7O1LBG966gXyVeoYIgqo_gJF8yajvbaUm9e8AORXuNJ7466Hh6VfsNVlGfrqSF-DMw9nMacnU' })
+  return getToken(messaging, { vapidKey: process.env.REACT_APP_vapidKey })
     .then((currentToken) => {
       if (currentToken) {
         console.log('current token for client: ', currentToken);

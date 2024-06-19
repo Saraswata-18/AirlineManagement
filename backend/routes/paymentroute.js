@@ -9,8 +9,8 @@ const asyncHandler = require('express-async-handler');
 const crypto=require('crypto');
 const router = express.Router();
 const razorpay = new Razorpay({
-    key_id: 'rzp_test_dWGuTHp9rBWXeX',
-    key_secret: 'ijARnHi4vaErhE5IlSc7ATMD'
+    key_id: process.env.key_id,
+    key_secret: process.env.key_secret
   });
 
   router.post('/order',asyncHandler( async (req, res) => {

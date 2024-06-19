@@ -1,16 +1,17 @@
 import React, { useRef,useEffect,useState } from 'react'
 import api from '../API/api'
 import listl from './listl.svg'
-import Navbar from '../Navbar/Navbar'
+import Seats from './Seats'
 import { useNavigate } from 'react-router-dom'
-const UpdateFlight = () => {
+import Navbar from '../Navbar/Navbar'
+const Add = () => {
     const navigate=useNavigate()
     const check=()=>{
         const token = localStorage.getItem('token')
         if (!token) {
           navigate("/")
         } else {
-          api.get('/logged/company/staff', {
+          api.get('/logged/manager', {
             headers: {
               Authorization: token
             }
@@ -22,13 +23,51 @@ const UpdateFlight = () => {
                 
     
             } else {
-              localStorage.removeItem('token')
-              navigate("/")
+              api.get('/logged/company/staff', {
+                headers: {
+                  Authorization: token
+                }
+              }).then(res => {
+
+                if (res.data.success) {
+
+
+
+
+                } else {
+                  localStorage.removeItem('token')
+                  navigate("/")
+
+                }
+              }).catch((err) => {
+                localStorage.removeItem('token')
+                navigate("/")
+
+              })
     
             }
           }).catch((err) => {
-            localStorage.removeItem('token')
-            navigate("/")
+            api.get('/logged/company/staff', {
+              headers: {
+                Authorization: token
+              }
+            }).then(res => {
+
+              if (res.data.success) {
+
+
+
+
+              } else {
+                localStorage.removeItem('token')
+                navigate("/")
+
+              }
+            }).catch((err) => {
+              localStorage.removeItem('token')
+              navigate("/")
+
+            })
     
           })
         }
@@ -43,30 +82,31 @@ const UpdateFlight = () => {
       useEffect(()=>{
         ftt()
       },[])
-      
+      const [dataf,setDataf]=useState({})
       const [img,setImg]=useState('')
       const [id,setId]=useState()
     const dept=useRef();
     const air=useRef();
     const dur=useRef();
+    const [notMsg,setNotMsg]=useState(false)
     const arr=useRef();
     const price=useRef();
     const logo=useRef();
     const input1=useRef();
     const input2=useRef();
-    
     const [premprice,setPremprice]=useState()
     const [busiprice,setBusiprice]=useState()
+    const [premium,setPremium]=useState(false)
     const [from,setFrom]=useState('')
-    const [premium,setPremium]=useState()
-    
+    const [list,setList]=useState([])
+    const [isSeats,setIsSeats]=useState(false)
     const [row,setRow]=useState(10)
     const [isFocus,setIsFocus]=useState('')
     const input3=useRef()
     const [searchTerm,setSearchTerm]=useState()
     const [filteredData,setFilteredData]=useState([])
     const [fiata,setFiata]=useState('')
-    const [notMsg,setNotMsg]=useState(false)
+    
     const [to,setTo]=useState('')
     const [isFocusp,setIsFocusp]=useState('')
     const input4=useRef()
@@ -139,41 +179,23 @@ const UpdateFlight = () => {
         }
     
       }
+    
       const checki=()=>{
         api.post("/api/flights",{id:id}).then((res)=>{if(res.data.success){
-            
-            air.current.value= res.data.flight_name
-            dept.current.value=res.data.dept_date.toString()+'T'+res.data.dept_time.toString()
-            arr.current.value=res.data.arr_date.toString()+'T'+res.data.arr_time.toString()
-            dur.current.value=res.data.duration.toString()
-            price.current.value=res.data.price
-            setImg(res.data.image)
-            setFiata(res.data.from)
-            setTiata(res.data.to)
-            setPremium(res.data.premium)
-            setRow(res.data.seatRows)
-             setFrom(res.data.fromTitle)
-             setTo(res.data.toTitle)
-            setNotMsg(false)
-            setPremprice(res.data.premprice)
-            setBusiprice(res.data.busiprice)
-        
-    }else{if(id){setNotMsg(true)}else{setNotMsg(false)}}}).catch((err)=>{console.log(err)})
+            if(id){setNotMsg(true)}else{setNotMsg(false)}
+ }else{setNotMsg(false)}}).catch((err)=>{console.log(err)})
       }
-    
-    
       useEffect(() => {
         ft()
       }, [searchTerm, searchTo])
     
-    const handleSubmit=(data)=>{
+    const handleSubmit=()=>{
         
-        
+        let data=dataf
         
         console.log(data)
         api.post("/api/setflights",{flight_id:id,flight_name:data.flight_name, dept_time:data.dept_time,dept_date:data.dept_date,duration:data.duration,price:data.price,from:data.from,to:data.to,premium:data.premium,business:data.business,arr_time:data.arr_time,arr_date:data.arr_date,fromTitle:data.fromTitle,toTitle:data.toTitle,image:img,seatRows:row,premprice:premprice,busiprice:busiprice}).then((res)=>{
-          window.alert('Details Submitted')
-            
+            console.log(res.data.id);api.post('/api/addseats',{id:res.data.id,type:data.premium ? 'premium' : 'economy', seatarr:list }).then(()=>{navigate('/Home')}).catch((err)=>{console.log(err)})
         }).catch((err)=>{console.log(err)})
     
     }
@@ -181,15 +203,16 @@ const UpdateFlight = () => {
     <>
     <Navbar/>
     <div className='h-[4.2rem]'></div>
-    <div className='w-screen justify-center items-center flex h-screen bg-gradient-to-r from-yellow-400 to-orange-400'>
+    {!isSeats&&<div className='w-screen justify-center items-center flex h-screen bg-gradient-to-r from-yellow-400 to-orange-400'>
        <div className='bg-white w-[70%] rounded-lg flex flex-col'>
        <div className='h-10 col-span-2 flex items-center rounded-t-lg px-10 text-2xl text-white font-semibold bg-gradient-to-r from-orange-500 to-yellow-400'>Enter Informations</div>
          <div className='bg-white w-[70%] rounded-lg p-10 grid gap-x-60 grid-cols-2'>
             
          <div className='w-96 h-16 flex flex-col'>
         <label className='font-semibold' for='company'>Flight Id</label>
-      <input value={id} onChange={(e)=>{setId(e.target.value)}} onBlur={()=>{checki()}} className='h-12 border-2 border-orange-600 rounded-md px-2 w-96' id='company' type='text' placeholder='ABC Flights' />
-      {notMsg&&<div className='text-red-500 mt-16 fixed'>Not a valid ID</div>}
+      <input onBlur={()=>checki()} value={id} onChange={(e)=>{setId(e.target.value)}} className='h-12 border-2 border-orange-600 rounded-md px-2 w-96' id='company' type='text' placeholder='ABC Flights' />
+      {notMsg&&<div className='text-red-500 -mt-4 fixed'>ID Already in use</div>}
+
       </div>
             <div className='w-96 h-16 flex flex-col'>
         <label className='font-semibold' for='company'>Airlines Name</label>
@@ -278,26 +301,29 @@ const UpdateFlight = () => {
                     </ul>)}
                 </div>
               </div>
-              
+      <div className='w-96 h-14 mt-9 flex flex-row'>
+        <label className='font-semibold mr-4' for='company'>Does it contains Premium class</label>
+      <input checked={premium} onChange={()=>setPremium(!premium)} className='h-8 w-8' id='company' type='checkbox' placeholder='ABC Flights' />
+      </div>
+      {premium&&<div className=' col-span-2 flex flex-row'>
+        <div className='w-96 h-16 mt-5 flex flex-col'>
+        <label className='font-semibold' for='company'>Business Price</label>
+      <input value={busiprice} onChange={(e)=>setBusiprice(e.target.value)} className='h-12 w-96 border-2 border-purple-600 rounded-md px-2' id='company' type='number' />
+      </div>
+      <div className='w-96 h-16 ml-16 mt-5 flex flex-col'>
+      <label className='font-semibold' for='company'>Premium Price</label>
+    <input value={premprice} onChange={(e)=>setPremprice(e.target.value)} className='h-12 w-96 border-2 border-purple-600 rounded-md px-2' id='company' type='number' />
+    </div>
+    </div>
+      }
       <div className='w-96 h-14 mt-3 flex flex-col'>
         <label className='font-semibold mr-4' for='company'>Enter number of Rows</label>
         <input value={row} onChange={(e)=>setRow(e.target.value)} className='h-12 border-2 border-orange-600 rounded-md px-2 w-96' id='company' type='text' />
         </div>
-        {premium&&<div className=' col-span-2 flex flex-row'>
-        <div className='w-96 h-16 mt-5 flex flex-col'>
-        <label className='font-semibold' for='company'>Business Price</label>
-      <input value={busiprice} onChange={(e)=>setBusiprice(e.target.value)} className='h-12 w-96 border-2 border-orange-600 rounded-md px-2' id='company' type='number' />
-      </div>
-      <div className='w-96 h-16 ml-16 mt-5 flex flex-col'>
-      <label className='font-semibold' for='company'>Premium Price</label>
-    <input value={premprice} onChange={(e)=>setPremprice(e.target.value)} className='h-12 w-96 border-2 border-orange-600 rounded-md px-2' id='company' type='number' />
-    </div>
-    </div>
-      }
+      
      
       </div>
-      <div className='flex justify-between mx-[25%]'>
-      <button onClick={()=>{let data={};if(!notMsg&&price.current.value&&from&&air.current.value&&dept.current.value&&dur.current.value&&arr.current.value&&to&&img&&row&&id){
+      <button onClick={()=>{let data={};if(!notMsg&&price.current.value&&from&&air.current.value&&dept.current.value&&dur.current.value&&arr.current.value&&to&&img&&row&&id&&(premium?(busiprice&&premprice):true)){
         data= {
 
         flight_name:air.current.value,
@@ -315,14 +341,13 @@ const UpdateFlight = () => {
         image:img,
         seatRows:row
         
-        };handleSubmit(data)}else{window.alert('Enetr All the Details')}; console.log(price.current.value)}} className='w-28 text-white mt-2 mb-2 self-center bg-blue-700 h-10 rounded-3xl hover:scale-110 hover:bg-brightness-75 ' >Submit</button>
-        {!notMsg&&id&&<button onClick={()=>navigate('/updateseats/'+id.toString())} className='w-28 text-white mt-2 mb-2 self-center bg-blue-700 h-10 rounded-3xl hover:scale-110 hover:bg-brightness-75 ' >Update Seats</button>}
-        </div>
+        }; setDataf(data);setIsSeats(true)}else{window.alert('Enetr All the Details')}; console.log(price.current.value)}} className='w-28 text-white mt-2 mb-2 self-center bg-blue-700 h-10 rounded-3xl hover:scale-110 hover:bg-brightness-75 ' >Register</button>
+
       </div>
-    </div>
-    
+    </div>}
+    {isSeats&&<Seats row={row} list={list} setList={setList} premprice={premprice} busiprice={busiprice} premium={premium} handleSubmit={handleSubmit} />}
     </>
   )
 }
 
-export default UpdateFlight
+export default Add

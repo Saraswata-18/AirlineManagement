@@ -1,9 +1,9 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import user from './user.jpg'
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import api from '../API/api.js'
-
+import Navbar from '../Navbar/Navbar.js';
 
 import { useNavigate } from 'react-router-dom';
 const SignIn = () => {
@@ -13,10 +13,13 @@ const SignIn = () => {
     const [isFocusn, setIsFocusn] = useState(false);  
     const [mann,setMann]=useState('')
     const [manp,setManp]=useState('')
+    const [mannc,setMannc]=useState('')
+    const [manpc,setManpc]=useState('')
     const [cango,setCanGo]=useState(true)
     const [cangon,setCanGoN]=useState(true)
     const [cangor,setCanGoR]=useState(true)
     const [notmsg,setNotMsg]=useState('')
+    const [ispop6,setIspop6]=useState(false)
     const [notmsg1,setNotMsg1]=useState('User name not available')
     const [notmsg2,setNotMsg2]=useState('Re enter correct password')
     const [userName,setUserName]=useState('')
@@ -43,16 +46,50 @@ const SignIn = () => {
       if(s==='m'){
         setUserMail(e.target.value)
       }
+      
   
   
     }
+    const check=()=>{
+      api.get('/company/initialize').then((res)=>{if(!res.data.success){setIspop6(true)}})
+        const token = localStorage.getItem('token')
+        if (!token) {
+          console.log('hello')
+          navigate("/")
+        } else {
+          api.get('/logged/manager', {
+            headers: {
+              Authorization: token
+            }
+          }).then(res => {
+           console.log(res)
+            if (res.data.success) {
+
+
+
+
+            } else {
+
+                navigate('/Home')
+            }
+          }).catch((err) => {
+              navigate('/Home')
+          })
+
+        }
+      }
+    useEffect(()=>{
+      check()
+      api.get('/company/initialize').then((res)=>{if(!res.data.success){setIspop6(true)}})
+
+    })
     const handleMail=()=>{
       if(userMail.length>0){
         if(!userMail.includes('@')){
             setCanGo(false)
             setNotMsg('Enter a Valid Mail ID')
         }else{
-          api.post("/api/checkall",{
+          api.post("/company/checkall",{
             username:false,
             usermail:userMail
           },{
@@ -76,7 +113,7 @@ const SignIn = () => {
     }
     const handleName=()=>{
       if(userName.length>0){
-        api.post("/api/checkall",{
+        api.post("/company/checkall",{
         username:userName,
         usermail:false
       },{
@@ -95,7 +132,7 @@ const SignIn = () => {
       }).catch((err)=>{})
     
   }else{
-    setCanGo(true)
+    setCanGoN(true)
   }
     }
     const handleRep=()=>{
@@ -130,13 +167,17 @@ api.post('company/manager/check',{username:mann, password:manp}).then((res)=>{if
   }
 }).catch(err=>{
   window.alert('Something went wrong! Try again with correct credentials')
-})}})
+})}}).catch((err)=>  window.alert('Something went wrong! Try again with correct credentials')
+)
 }
   return (
+    
     <div>
+      <Navbar/>
+      <div className='h-[4.2rem]'></div>
       {ispop3&&<div onClick={(e) => {const r=box.current; if (!(e.target===box.current||r.contains(e.target))) { setIspop3(false) } }} className=' flex z-20 fixed h-full w-full bg-black bg-opacity-20 items-center justify-center'>
     <div ref={box} className='bg-white w-[30vw] rounded-xl shadow-lg shadow-gray-600 items-center px-8 py-5 flex flex-col h-[55vh]'>
-    <h1 className='text-2xl self-start font-semibold'>Edit Password</h1>
+    <h1 className='text-2xl self-start font-semibold'>Enter Manager Credentials</h1>
     <div className='flex mt-4 h-24 flex-col p-1'>
           <label className='font-semibold'>Manager Username </label>
         <input type='text' value={mann} onChange={(e)=>{setMann(e.target.value)}} className='w-72 border-[1px] rounded-sm px-2 border-gray-500 border-solid h-10'/></div>
@@ -144,8 +185,22 @@ api.post('company/manager/check',{username:mann, password:manp}).then((res)=>{if
           <label className='font-semibold'>Password</label>
         <input type='text'value={manp} onChange={(e)=>{setManp(e.target.value)}} className='w-72 px-2 border-[1px] rounded-sm border-gray-500 border-solid h-10'/></div>
        
-       <div  className='flex flex-row ml-28 w-full h-14'><button onClick={()=>sub()} className='w-28 h-10 bg-blue-700 text-white hover:brightness-75 transition-all duration-300 ease-in-out rounded-full'>Submit</button>
+        <div className='flex flex-row ml-28 w-full h-14'><button onClick={()=>{sub();setIspop3(false)}} className='w-28 h-10 bg-blue-700 text-white hover:brightness-75 transition-all duration-300 ease-in-out rounded-full'>Submit</button>
        <button onClick={()=>setIspop3(false)} className='w-28 h-10 bg-white ml-14 text-gray-300 hover:brightness-75 transition-all duration-300 ease-in-out rounded-full'>Cancel</button>
+       </div>
+      </div>
+      </div>}
+      {ispop6&&<div className=' flex z-20 fixed h-full w-full bg-black bg-opacity-20 items-center justify-center'>
+    <div className='bg-white w-[30vw] rounded-xl shadow-lg shadow-gray-600 items-center px-8 py-5 flex flex-col h-[55vh]'>
+    <h1 className='text-xl self-start font-semibold'>Hello! Since This is site initialization . I Need a Manager</h1>
+    <div className='flex mt-4 h-24 flex-col p-1'>
+          <label className='font-semibold'>Manager Username </label>
+        <input type='text' value={mannc} onChange={(e)=>{setMannc(e.target.value)}} className='w-72 border-[1px] rounded-sm px-2 border-gray-500 border-solid h-10'/></div>
+        <div className='flex mt-4 h-24 flex-col p-1'>
+          <label className='font-semibold'>Password</label>
+        <input type='text'value={manpc} onChange={(e)=>{setManpc(e.target.value)}} className='w-72 px-2 border-[1px] rounded-sm border-gray-500 border-solid h-10'/></div>
+
+       <div  className='flex flex-row ml-28 w-full h-14'><button onClick={()=>{api.post('/company/initialize/add',{username:mannc,password:manpc}).then(()=>{window.alert('Manager Added Successfully');setIspop6(false)})}} className='w-28 h-10 bg-blue-700 text-white hover:brightness-75 transition-all duration-300 ease-in-out rounded-full'>Submit</button>
 
        </div>
       </div>
@@ -175,7 +230,6 @@ api.post('company/manager/check',{username:mann, password:manp}).then((res)=>{if
                 </div>
                 {!cangor&&<div className='text-xs self-start ml-28 text-red-600'>{notmsg2}</div>}
                 <button type='submit' className='w-28 text-white mt-2 mb-2 self-center bg-blue-700 h-10 rounded-3xl hover:scale-110 hover:bg-brightness-75 ' >Register</button>
-                <div className='flex text-md text-gray-600 self-center'>Already have an account? <Link className='ml-10 text-blue-500' to="/Login">Login</Link></div>
       </form>
       </div>
     </div>

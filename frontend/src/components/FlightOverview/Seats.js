@@ -27,11 +27,11 @@ const Seats = ({seats,seatsPrice,setSeatsPrice,type,num,passenger_info_list,setP
             }
             else if((seats[k].price)<=300){
                 j='bg-green-700'
-                console.log(300)
+                // console.log(300)
         }
         else if((seats[k].price)<=500){
             j='bg-blue-300'
-            console.log(500)
+            // console.log(500)
     }
     else{
         j='bg-purple-500'
@@ -258,12 +258,12 @@ const Seats = ({seats,seatsPrice,setSeatsPrice,type,num,passenger_info_list,setP
                 }
             }else{
                 if(lisb.includes(item.seatNumber)){
-                    listItems.push(<button onClick={(e) => handleBusi(e)} className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
+                    listItems.push(<button className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
         
                 }else if(lisl.includes(item.seatNumber)){
                     listItems.push(<div className='w-10 h-10'></div>)}
                     else if(lisp.includes(item.seatNumber)){
-                        listItems.push(<button onClick={(e) => handlePrem(e)} className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
+                        listItems.push(<button  className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
                     }else{
                         if (!item.isAvailable) {
                             listItems.push(<button className='bg-red-500 w-10 text-white rounded-md cursor-not-allowed h-10' key={index}>{item.seatNumber}</button>)
