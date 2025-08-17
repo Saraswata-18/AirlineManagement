@@ -1,31 +1,30 @@
 import { useState } from "react";
 const Sidebar = (props) => {
     const { flight_details } = props;
-    const fareprice=(!(props.way==='true')?flight_details.price * props.passengers_num:flight_details.price * props.passengers_num+props.arrflight.price * props.passengers_num)
+    const fareprice=(!(props.way==='true')?flight_details.price * props.passengers_num:flight_details.price * props.passengers_num+props.arrflight.price * props.passengers_num)  
     const handleSubmit=()=>{
         let ntru=''
         let map1=new Map()
         let arr=[]
-        console.log([props.passenger_info_list.length,props.passengers_num])
-        console.log([props.passenger_info_list.length,props.passengers_num])
+
         if(props.passenger_info_list.length!==props.passengers_num){
             window.alert("Enter all the credentials for all passengers")
             return 
         }
         props.passenger_info_list.forEach((element)=>{
-            console.log(element)
             if(map1.has(element.number)){
                 ntru='a'
             
-            }else if(!element.number||!element.name||!element.gender||!element.mail||!element.age){
+        }else if(!element.number||!element.name||!element.gender||!element.mail||!element.age){
             ntru='b'
-            }else if(Number(element.age<18)){
+            
+        }else if(Number(element.age<18)){
             ntru='c'
         }
         else{map1.set(element.number,1)}
-
-
-
+    
+    
+    
     })
         if(ntru==='a'){
             window.alert("All Passengers Should Have unique Phone Number")
@@ -39,12 +38,14 @@ const Sidebar = (props) => {
             window.alert('Adult Age Should Be grater than or equal to 18')
             return
         }
+        
         props.passenger_info_list.forEach((item)=>{
             arr.push({
                 pname:item.name,
                 seat:'Not Selected'
             })
         })
+        
         props.setSeatspass(arr)
         props.setIsSeats(true)
 
@@ -53,7 +54,7 @@ const Sidebar = (props) => {
         <div className="w-[40%] h-fit flex m-6 justify-center sticky top-14">
             <div className="w-[95%] border-pink-400 border-[3px] mt-5 flex flex-col items-center bg-white rounded-[2rem] shadow-xl shadow-gray-600">
                 {/* flight details box */}
-                <div className="w-[90%] bg-gradient-to-r shadow-lg shadow-gray-700 from-yellow-400 to-teal-400 hover:opacity-80 mt-10 p-6 h-fit border-2 border-black rounded-xl">
+                <div className="w-[90%] bg-gradient-to-r shadow-lg shadow-gray-700 from-blue-400 to-teal-400 hover:opacity-80 mt-10 p-6 h-fit border-2 border-black rounded-xl">
 
                     <div className="flex justify-between ">
                         <div className="text-2xl">{flight_details.airline}</div>
@@ -103,12 +104,9 @@ const Sidebar = (props) => {
 </div>
 
 </div>}
-                
-                
-                
-                
+
                 {/* fare and passengers */}
-                <div className="w-[90%] bg-gradient-to-r shadow-lg shadow-gray-700 from-yellow-400 to-teal-400 hover:opacity-80 border-2 border-black rounded-xl mt-7 p-5 flex flex-col">
+                <div className="w-[90%] bg-gradient-to-r shadow-lg shadow-gray-700 from-blue-400 to-teal-400 hover:opacity-80 border-2 border-black rounded-xl mt-7 p-5 flex flex-col">
                     <div className="flex  justify-between"><div className="text-left">
                         <div className="text-2xl mb-2">Fare Amount</div>
                         <div className="text-xl">₹{fareprice}</div>
@@ -139,7 +137,7 @@ const Sidebar = (props) => {
                     </div>
                     <div className="flex mt-1 justify-between"><div className="text-left">
                         
-                    <div className="text-xl">₹{props.cfee+props.seatPrice+fareprice}</div>
+                        <div className="text-xl">₹{props.cfee+props.seatPrice+fareprice}</div>
                     </div>
                     <div className="text-right">
                         
@@ -149,7 +147,7 @@ const Sidebar = (props) => {
                     </div>
                 </div>
                 <div className="w-[90%] flex mt-2 p-6 mb-8">
-                {!props.nway&&props.isSeats&&<div className="flex justify-between"><button onClick={()=>{props.handlePayment(props.cfee+props.seatPrice+fareprice);}} className='w-24 p-2 h-10 text-white text-lg bg-[#d354bd] text-semibold rounded-3xl shadow-gray-800 shadow-md hover:scale-105 hover:bg-opacity-20'>Pay</button>
+                    {!props.nway&&props.isSeats&&<div className="flex justify-between"><button onClick={()=>{props.handlePayment(props.cfee+props.seatPrice+fareprice);}} className='w-24 p-2 h-10 text-white text-lg bg-[#d354bd] text-semibold rounded-3xl shadow-gray-800 shadow-md hover:scale-105 hover:bg-opacity-20'>Pay</button>
                     <button onClick={()=>{
                         let arr=[]
                          props.passenger_info_list.forEach((item)=>{

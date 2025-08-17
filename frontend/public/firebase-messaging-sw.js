@@ -4,13 +4,13 @@ importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js')
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-    apiKey: "AIzaSyD5HYuiN2DZibQo1bmPIqzicVLSpcvE17E",
-    authDomain: "airline-management-3ba48.firebaseapp.com",
-    projectId: "airline-management-3ba48",
-    storageBucket: "airline-management-3ba48.appspot.com",
-    messagingSenderId: "808578428178",
-    appId: "1:808578428178:web:13e27942ef147d47d157cb",
-    measurementId: "G-G70ZH5WTE6"
+  apiKey: process.env.REACT_APP_apiKey,
+  authDomain: "notification-bf689.firebaseapp.com",
+  projectId: "notification-bf689",
+  storageBucket: "notification-bf689.appspot.com",
+  messagingSenderId: "545378563400",
+  appId: "1:545378563400:web:419f9c900eeac28699af7d",
+  measurementId: "G-VSN3QW1HC7"
 });
 
 const messaging = firebase.messaging();

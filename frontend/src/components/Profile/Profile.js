@@ -92,7 +92,7 @@ const Profile = () => {
     }
 
   }
- 
+
   const handleMail = () => {
     api.get("/sendMail").then((res) => {
       if (res.data.success) {
@@ -181,7 +181,7 @@ const Profile = () => {
       
     </div>}
     {ispop2 && <div onClick={(e) => {const r=box.current; if (!(e.target===box.current||r.contains(e.target))) { setIspop2(false) } }} className=' flex z-10 fixed h-full w-full bg-black bg-opacity-20 items-center justify-center'>
-    <div ref={box} className='bg-white w-[33vw] rounded-xl shadow-lg shadow-gray-600 p-5 gap-0 grid grid-cols-2 h-[55vh]'>
+      <div ref={box} className='bg-white w-[33vw] rounded-xl shadow-lg shadow-gray-600 p-5 gap-0 grid grid-cols-2 h-[55vh]'>
         <h1 className='text-2xl font-semibold'>Edit Profile</h1><h1></h1>
         <div className='flex mt-4 h-24 flex-col p-1'>
           <label className='font-semibold'>Name</label>
@@ -196,13 +196,13 @@ const Profile = () => {
           <label className='font-semibold'>Age</label>
         <input type='number' value={age} onChange={(e)=>{setAge(e.target.value)}} className='w-48 px-2 border-[1px] rounded-sm border-gray-500 border-solid h-10'/></div>
        
+
           <div className='flex h-24 flex-col p-1'>
           <label className='font-semibold'>Mail</label>
         <input type='text' value={mailk} onChange={(e)=>{setMailk(e.target.value)}} className='w-48 px-2 border-[1px] rounded-sm border-gray-500 border-solid h-10'/></div>
-        
         <div></div>
         <div className='h-32 flex flex-row justify-center'>
-        <button onClick={()=>{const trav={name:namek, mail:mailk, number:numberk, gender:genderk,age:age} ;
+          <button onClick={()=>{const trav={name:namek, mail:mailk, number:numberk, gender:genderk,age:age} ;
           const data={
             usermail:mail,
             name:name,
@@ -246,14 +246,14 @@ const Profile = () => {
       {ispop4&&<div onClick={(e) => {const r=box.current; if (!(e.target===box.current||r.contains(e.target))) { setIspop3(false) } }} className=' flex z-10 fixed h-full w-full bg-black bg-opacity-20 items-center justify-center'>
     <div ref={box} className='bg-white w-[30vw] rounded-xl shadow-lg shadow-gray-600 items-center px-8 py-5 flex flex-col h-[30vh]'>
     <h1 className='text-3xl self-center font-semibold'>Are You Sure?</h1>
-
+    
        <div  className='flex mt-14 flex-row ml-28 w-full h-14'><button onClick={()=>{localStorage.removeItem('token');navigate('/')}} className='w-28 h-10 bg-red-500 text-white hover:brightness-75 transition-all duration-300 ease-in-out rounded-full'>Logout</button>
        <button onClick={()=>setIspop4(false)} className='w-28 h-10 bg-white ml-14 text-gray-300 hover:brightness-75 transition-all duration-300 ease-in-out rounded-full'>Cancel</button>
 
        </div>
       </div>
       </div>}
-    <div className='flex px-32 py-16 flex-row bg-gradient-to-r from-orange-500 to-yellow-500'>
+    <div className='flex px-32 py-16 flex-row bg-gradient-to-r from-purple-500 to-pink-500'>
 
       {/* <div className='cursor-pointer' onClick={()=>handleMail()}>
       Verify Email </div>

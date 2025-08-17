@@ -14,7 +14,7 @@ const Options = (props) => {
                 <div className="bg-gray-100 p-10  w-[90%] rounded-[2rem] border-pink-400 border-[3px] shadow-lg shadow-gray-600 flex flex-col items-centre gap-8">
 
                     {/* seat type */}
-                    <div className="bg-gradient-to-r from-orange-400 to-teal-400 hover:opacity-80 flex flex-col shadow-lg shadow-gray-700 items-centre justify-center gap-6 border-2 border-purple-400 rounded-xl pt-7 pb-7">
+                    <div className="bg-gradient-to-r from-blue-400 to-teal-400 hover:opacity-80 flex flex-col shadow-lg shadow-gray-700 items-centre justify-center gap-6 border-2 border-purple-400 rounded-xl pt-7 pb-7">
                         <div className="text-2xl text-white font-semibold text-center">Seat Type</div>
                         <div className="flex justify-around">
                             <div>
@@ -36,7 +36,7 @@ const Options = (props) => {
                     </div>
 
                     {/* seat pref */}
-                    <div className="flex flex-col bg-gradient-to-r from-orange-400 to-teal-500 hover:opacity-80 shadow-lg shadow-gray-700 items-centre justify-center gap-6 border-2 border-purple-400 rounded-xl pt-7 pb-7">
+                    <div className="flex flex-col bg-gradient-to-r from-blue-400 to-teal-500 hover:opacity-80 shadow-lg shadow-gray-700 items-centre justify-center gap-6 border-2 border-purple-400 rounded-xl pt-7 pb-7">
                         <div className="text-2xl text-white font-semibold text-center">Seat Preference</div>
                         <div className="flex justify-around">
                             <div>
@@ -51,7 +51,7 @@ const Options = (props) => {
                     </div>
 
                     {/* luggage allowed */}
-                    <div className="flex flex-col bg-gradient-to-r from-orange-400 to-teal-500 hover:opacity-80 shadow-lg shadow-gray-700 items-centre justify-center gap-6 border-2 border-purple-400 rounded-xl pt-7 pb-7">
+                    <div className="flex flex-col bg-gradient-to-r from-blue-400 to-teal-500 hover:opacity-80 shadow-lg shadow-gray-700 items-centre justify-center gap-6 border-2 border-purple-400 rounded-xl pt-7 pb-7">
                         <div className="text-2xl text-white font-semibold text-center">Luggage Allowed</div>
                         <div className="flex justify-between">
                             <div className="ml-10 mr-10">
@@ -115,7 +115,7 @@ const Options = (props) => {
 
                 {/* important info */}
                 <div className="bg-gray-100 p-7 w-[90%] rounded-[2rem] border-pink-400 border-[3px] shadow-lg shadow-gray-600 flex flex-col items-centre gap-8">
-                    <div className="flex shadow-lg shadow-gray-600 bg-gradient-to-r from-orange-400 to-teal-500 hover:opacity-80 flex-col items-centre justify-center gap-6  rounded-lg pt-7 pb-7">
+                    <div className="flex shadow-lg shadow-gray-600 bg-gradient-to-r from-blue-400 to-teal-500 hover:opacity-80 flex-col items-centre justify-center gap-6  rounded-lg pt-7 pb-7">
                         <div className="text-3xl text-white font-semibold text-center">Important Information</div>
                         <div className="p-5">
                             <div className="text-xl font-semibold text-gray-700 mb-3">Check travel guidelines and baggage information below:</div>

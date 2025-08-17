@@ -33,8 +33,8 @@ const df=searchParam.get('df')
     const [seats, setSeats] = useState([])
     const [payment,setPayment]=useState({})
     const [seatspass, setSeatspass] = useState([])
-    const [mail,setMail]=useState('')
     const [cfee,setCfee]=useState(200)
+    const [mail,setMail]=useState('')
     const [isSeats,setIsSeats]=useState(false)
     const [seatPrice,setSeatPrice]=useState(0)
     const [type,setType]=useState(searchParam.get('t'))
@@ -52,7 +52,7 @@ const df=searchParam.get('df')
           }).then(res => {
            
             if (res.data.success) {   
-                // console.log(res.data.travellers)        
+                       
               setTravellers(res.data.travellers);
               setUserName(res.data.username);
               setMail(res.data.usermail)
@@ -102,7 +102,7 @@ const df=searchParam.get('df')
               setarrflight(flight)
               api.post("/api/seats",{id:res.data.flight_id}).then((res)=>{if(res.data.success){setarrseats(res.data.seats)};}).catch((err)=>{console.log(err)})
             }
-
+              
             ).catch((err)=>{console.log(err)})}}).catch((err)=>console.log(err))
         }).catch((err)=>console.log(err))
       }
@@ -113,38 +113,37 @@ const df=searchParam.get('df')
     //         setLoading(false);
     //     }, 3000);
     // }, []);
-    const handlePay=(data)=>{
-      const sarr=[]
-      passenger_info_list.forEach((item)=>{
-        sarr.push(item.seat)
-      })
-      const sarr2=[]
-      let arr2=[]
-      if(oldlist){
-        oldlist.forEach((item)=>{
-          sarr.push(item.seat)
-        })
-        arr2=arrseats.map((item)=>((sarr2.includes(item.seatNumber))?{seatNumber:item.seatNumber,price:item.price,isAvailable:false}:item))
-      }
-      const arr=seats.map((item)=>((sarr.includes(item.seatNumber))?{seatNumber:item.seatNumber,price:item.price,isAvailable:false}:item))
+const handlePay=(data)=>{
+  const sarr=[]
+  passenger_info_list.forEach((item)=>{
+    sarr.push(item.seat)
+  })
+  const sarr2=[]
+  let arr2=[]
+  if(oldlist){
+    oldlist.forEach((item)=>{
+      sarr.push(item.seat)
+    })
+    arr2=arrseats.map((item)=>((sarr2.includes(item.seatNumber))?{seatNumber:item.seatNumber,price:item.price,isAvailable:false}:item))
+  }
+  const arr=seats.map((item)=>((sarr.includes(item.seatNumber))?{seatNumber:item.seatNumber,price:item.price,isAvailable:false}:item))
+
+    if(way==='true'){
     
-        if(way==='true'){
-          console.log(oldlist)
-            api.post('/api/settravel',{username:username,passengers:oldlist,flightDetails:flight_details,paymentDetails:data})
-            .then((res)=>{if(res.data.success){api.post('/api/settravel',{username:username,passengers:passenger_info_list,flightDetails:arrflight,paymentDetails:data})
-              .then(()=>{navigate('/travel')})
-            .catch((err)=>{console.log(err)})}})
-            .catch((err)=>{console.log(err)})
-        }else{
-          api.post('/api/settravel',{username:username,passengers:passenger_info_list,flightDetails:flight_details,paymentDetails:data}).then(()=>{api.post('/api/addseats',{id:flight_details.flight_number,type:(type=='Economy')?'economy':'premium',seatarr:arr}).then(()=>navigate('/travel'))}).catch((err)=>{console.log(err)})
-        }
-    
+        api.post('/api/settravel',{username:username,passengers:oldlist,flightDetails:flight_details,paymentDetails:data})
+        .then((res)=>{if(res.data.success){api.post('/api/settravel',{username:username,passengers:passenger_info_list,flightDetails:arrflight,paymentDetails:data})
+          .then(()=>{navigate('/travel')})
+        .catch((err)=>{console.log(err)})}})
+        .catch((err)=>{console.log(err)})
+    }else{
+      api.post('/api/settravel',{username:username,passengers:passenger_info_list,flightDetails:flight_details,paymentDetails:data}).then(()=>{api.post('/api/addseats',{id:flight_details.flight_number,type:(type=='Economy')?'economy':'premium',seatarr:arr}).then(()=>navigate('/travel'))}).catch((err)=>{console.log(err)})
+    }
 
 }
     const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const handlePayment = async (amount) => {
-    // console.log('Payment button clicked');
+    
     try {
       const orderResponse = await api.post('/secure/payment/order', {
         amount: amount,
@@ -153,7 +152,7 @@ const df=searchParam.get('df')
         notes: { flight: 'Flight XYZ' }
       });
 
-      // console.log('Order response:', orderResponse.data);
+      
       const { id: order_id } = orderResponse.data;
 
       const options = {
@@ -164,7 +163,7 @@ const df=searchParam.get('df')
         description: 'Test Transaction',
         order_id: order_id,
         handler: async (response) => {
-          // console.log('Payment response:', response);
+          
           setPayment({order_id:response.razorpay_order_id,payment_id: response.razorpay_payment_id,signature:response.razorpay_signature})
           ;handlePay({order_id:response.razorpay_order_id,payment_id: response.razorpay_payment_id,signature:response.razorpay_signature})
           try {
@@ -223,7 +222,7 @@ const df=searchParam.get('df')
             ) : (
                 <>
                     <div className='h-[4.2rem]'></div>
-                    <div className="flex w-full bg-gradient-to-r from-orange-500 to-yellow-500">
+                    <div className="flex w-full bg-gradient-to-r from-purple-500 to-pink-500">
                         <Sidebar
                             flight_details={flight_details}
                             passengers_num={passengers_num}

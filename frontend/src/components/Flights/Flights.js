@@ -24,7 +24,7 @@ const Flights = () => {
   // setData(data);
   let min = 0;
   let max = 100000;
- 
+  
   
   const [Em,setEm] = useState(false);
   const [Mo,setMo] = useState(false);
@@ -72,7 +72,7 @@ const [data2,setData2] = useState([]);
       mainHandler();
   },[Em,Mo,Af,Ni,upperLimit]);
 useEffect(()=>{
-  api.post('/api/getflights',{from:from,to:to,date:dept,premium:(type==='Economy')?false:true}).then((res)=>{console.log(res);setData(res.data.arr);setData2(res.data.arr)}).catch((err)=>{console.log(err)})
+  api.post('/api/getflights',{from:from,to:to,date:dept,premium:(type==='Economy')?false:true}).then((res)=>{setData(res.data.arr);setData2(res.data.arr)}).catch((err)=>{console.log(err)})
 
 },[from])
 function isTimeRange(range,time){
@@ -94,7 +94,7 @@ function mainHandler(){
   if(Em){
     
     for(const obj of data2){
-      console.log(obj.dept_time)
+      
         if(isTimeRange(["00:00","06:00"],obj.dept_time))
           dummyData.push(obj);
     }
@@ -196,7 +196,6 @@ function resetHandler(){
 
 
 
-
   return (
 
   <div className='bg-gray-100 h-[100vh]'>
@@ -205,7 +204,7 @@ function resetHandler(){
 
       <div className='flex flex-row'>
       <div className='mt-2 ml-40 w-[300px] h-[400px] shadow-md bg-zinc-50 rounded flex flex-col'>
-
+      
         <div className='flex flex-row place-content-between p-4 pt-5 border-b-[1px]
         border-gray-700'>
             <div className='text-xl font-medium'>Filter By</div>
@@ -291,14 +290,15 @@ function resetHandler(){
 
 
       </div>
-      <div className='mt-12 w-[900px]  mr-2 ml-4 '>
+        <div className='mt-12 w-[900px]  mr-2 ml-4 '>
         {from&&((!df)?<h1 className='text-2xl font-semibold ml-4'>Select Departure Flight</h1>:<h1 className='text-2xl font-semibold ml-4'>Select Arrival Flight</h1>)}
-           <div className="h-[50px] mt-4 w-[900px] mr-2 ml-4 shadow-md bg-zinc-50 flex flex-row items-center pl-2 rounded font-medium">{from} &rarr; {to}</div> 
+           <div className="h-[50px] mt-4 w-[900px] mr-2 ml-4 shadow-md bg-zinc-50 flex flex-row items-center pl-2 rounded font-medium">{from} &rarr; {to}</div>
+            
            
             
             {
               data.length > 0 ? data.map((item,index)=>(
-                (((new Date(dept+'T'+item.dept_time)).getTime()-(new Date()).getTime()>1000*60*60*6)&&<FlightDetail data={{...data[index]}} eld={eld} type={type} way={way} arr={arr} df={df} from={to} to={from} chi={chi} inf={inf} setSearchParams={setSearchParams} ></FlightDetail>))):
+              (((new Date(dept+'T'+item.dept_time)).getTime()-(new Date()).getTime()>1000*60*60*6)&&<FlightDetail data={{...data[index]}} eld={eld} type={type} way={way} arr={arr} df={df} from={to} to={from} chi={chi} inf={inf} setSearchParams={setSearchParams} ></FlightDetail>))):
               (
                 <div className='hover:border-sky-600 shadow-md hover:border-2 rounded mt-2 mr-2 ml-4 w-[905px] h-[400px] flex flex-col gap-x-2 justify-center items-center text-3xl font-medium'>
                     <div> No FLights Found! </div>

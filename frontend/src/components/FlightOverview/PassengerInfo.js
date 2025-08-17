@@ -15,7 +15,7 @@ const PassengerInfo = (props) => {
     useEffect(()=>{
         if(props.prev_passenger_info){
             if(isadding){
-        // console.log(props.prev_passenger_info)    
+          
         setPassengerInfo(Object.assign(props.prev_passenger_info,{seat:''}));
         props.setAddTravellers()
         handleChange(props.prev_passenger_info)
